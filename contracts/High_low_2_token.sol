@@ -1,7 +1,6 @@
 pragma solidity ^0.4.21;
 library SafeMath 
 {
-    
     function add(uint a, uint b) internal pure returns (uint) 
     {
         uint c;
@@ -33,7 +32,6 @@ library SafeMath
         c = a / b;
         return c;
     }
-    
 }
 
 contract High_low_2_token
@@ -49,12 +47,12 @@ contract High_low_2_token
     address public owner;
     address public token_address;
     
-    function High_low_2_token() public payable
+    constructor() public payable
     {
         symbol = "HLT";
         name = "High Low Token";
-        decimals = 2;
-        _totalSupply = 1000000 * 10**uint(decimals);
+        decimals = 18;
+        _totalSupply = 1 * 10**uint(decimals);
         token_address=address(this);
         balances[token_address]= _totalSupply;
         owner=msg.sender;
@@ -64,8 +62,6 @@ contract High_low_2_token
     
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
     
-    function() public payable { }
-
     function totalSupply() public constant returns (uint256) 
     {
         return _totalSupply;
@@ -81,7 +77,7 @@ contract High_low_2_token
         require(balances[msg.sender] >= _value &&  _value > 0);
         balances[msg.sender] = balances[msg.sender].sub(_value);//calling library
         balances[_to] = balances[_to].add(_value);
-        Transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -90,14 +86,14 @@ contract High_low_2_token
         require(balances[_from] >= _value && _value > 0);
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
-        Transfer(_from, _to, _value);
+        emit Transfer(_from, _to, _value);
         return true;
     }
 
     function approve(address _spender, uint256 _value) public payable returns (bool) 
     {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
@@ -105,5 +101,4 @@ contract High_low_2_token
     {
         return allowed[_owner][_spender];
     }
-
 }
