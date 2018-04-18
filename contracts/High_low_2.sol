@@ -6,7 +6,7 @@ contract High_low_2
     
     event Transfer_amount(address _sender,address _receiver,uint256 _transfer_amount);
     
-    constructor(High_low_2_token _token_address) public payable
+    function High_low_2(High_low_2_token _token_address) public payable
     {
         token_address = _token_address;
     }
@@ -58,7 +58,7 @@ contract High_low_2
     
     mapping(uint256=>uint256) public index_of_broker_bet;//key:bet_id  value: index_of_broker_bet(broker_created_bets)
     
-    mapping(address=>uint256) public broker_created_bets;
+    mapping(address=>uint256) public broker_created_bets;// total bet created by that particular broker (5)
     
     mapping(uint256=>address) public bet_creator;
     
@@ -105,6 +105,11 @@ contract High_low_2
     function length_of_broker_addresses() public constant returns(uint256)
     {
         return broker_addresses.length;
+    }
+    
+    function get_broker_address(uint256 index) public constant returns(address)
+    {
+        return broker_addresses[index]; //index start from 0
     }
     
     function check_better() public constant returns(bool)
@@ -207,9 +212,9 @@ contract High_low_2
         }
         return true;    
     }
-    /*function broker_setting_result_and_distribute_money(uint256 bet_id,uint256 result_options) public payable returns(bool)// is_result_setted_and_prize_distributed 
+    function broker_setting_result_and_distribute_money(uint256 bet_id,uint256 result_options) public payable returns(bool)// is_result_setted_and_prize_distributed 
     {
-        require(broker_created_bets[bet_id]==msg.sender);
+        require(bet_creator[bet_id]==msg.sender);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
         require(bet_status_map[bet_id].is_result_published==false);
         require(result_options<3 && result_options>=0);
@@ -219,7 +224,7 @@ contract High_low_2
         bet_status_map[bet_id].final_option=result_options;
         bool result_option;
         
-        
+        /*
         bet_creator[bet_id]
         
         uint256 index=gamers_map[_game_id];
@@ -315,6 +320,7 @@ contract High_low_2
             gamers_map[_game_id]=index;
             return true;
         }
+        */
     }
-    */
+    
 }
