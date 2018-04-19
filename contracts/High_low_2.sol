@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.0;
 import "./High_low_2_token.sol";
 contract High_low_2
 {
@@ -10,20 +10,25 @@ contract High_low_2
     {
         token_address = _token_address;
     }
-   
+    
     function buy_token() public payable returns(bool)
     {
-        High_low_2_token(token_address).transferFrom(token_address, msg.sender, ((msg.value*10**18)/0.001 ether));
+        High_low_2_token(token_address).transferFrom(token_address, msg.sender, msg.value*1000);
         return true;
     }
     
     function exchange_token(uint256 tokens_to_exchange_in_wei) public payable returns(bool)
     {
-        require(High_low_2_token(token_address).balanceOf(msg.sender)>=((tokens_to_exchange_in_wei*10**18)/0.001 ether));
-        High_low_2_token(token_address).transferFrom(msg.sender,token_address,((tokens_to_exchange_in_wei*10**18)/0.001 ether));
+        require(High_low_2_token(token_address).balanceOf(msg.sender)>= tokens_to_exchange_in_wei*1000);
+        High_low_2_token(token_address).transferFrom(msg.sender,token_address, tokens_to_exchange_in_wei*1000);
         msg.sender.transfer(tokens_to_exchange_in_wei);
-        emit Transfer_amount(this,msg.sender,tokens_to_exchange_in_wei);
+        Transfer_amount(this,msg.sender,tokens_to_exchange_in_wei);
         return true;
+    }
+    
+    function account_token_balance() public constant returns(uint256)
+    {
+        return High_low_2_token(token_address).balanceOf(msg.sender);
     }
     
     function contract_ether_balance() public constant returns(uint256)
@@ -70,6 +75,8 @@ contract High_low_2
     }
     mapping(address=>mapping(uint256=>better)) public game_id_map_better;//key: index  value:betting     
     
+    mapping(uint256=>address[]) public betters_of_bet_id;
+    
     mapping(address=>uint256[]) public better_betted_bets;
     
     mapping(uint256=>uint256) public bet_tokens_for_low;
@@ -83,10 +90,10 @@ contract High_low_2
     struct bet_status
     {
         bool is_bet_stopped;
-        bool is_result_published;
+        bool is_result_published; //to check is_result_published
         uint256 final_option; //10,11,12 
     }
-    mapping(uint256=>bet_status) public bet_status_map;//to check is_result_published 
+    mapping(uint256=>bet_status) public bet_status_map; 
     
     function add_broker() public payable returns(bool)
     {
@@ -137,14 +144,14 @@ contract High_low_2
     function betting(uint256 bet_id,uint256 _choice,uint256 _bet_tokens_in_wei) public payable returns(bool) // is_bet_success 
     {
         require(_bet_tokens_in_wei>0);
-        require(High_low_2_token(token_address).balanceOf(msg.sender)>=((_bet_tokens_in_wei*10**18)/0.001 ether));
+        require(High_low_2_token(token_address).balanceOf(msg.sender)>=_bet_tokens_in_wei*1000);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].start_time<=now);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
         require(bet_status_map[bet_id].is_bet_stopped==false);
         require(game_id_map_better[msg.sender][bet_id].betted_tokens==0);
         require(_choice==1||_choice==0);
         
-        High_low_2_token(token_address).transferFrom(msg.sender, token_address, ((_bet_tokens_in_wei*10**18)/0.001 ether));
+        High_low_2_token(token_address).transferFrom(msg.sender, token_address, _bet_tokens_in_wei*1000);
         game_id_map_better[msg.sender][bet_id].betted_tokens=_bet_tokens_in_wei;
         
         if(_choice==0)
@@ -159,6 +166,8 @@ contract High_low_2
             bet_tokens_for_high[bet_id]+=_bet_tokens_in_wei;
             high_betters[bet_id]++;
         }
+        
+        betters_of_bet_id[bet_id].push(msg.sender);
         
         better_betted_bets[msg.sender].push(bet_id);
         if(is_better[msg.sender]==false)
@@ -177,8 +186,8 @@ contract High_low_2
         require(game_id_map_better[msg.sender][bet_id].betted_tokens>0);
         require(bet_status_map[bet_id].is_bet_stopped==false);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
-        require(High_low_2_token(token_address).balanceOf(msg.sender)>=((_increase_tokens_in_wei*10**18)/0.001 ether));
-        High_low_2_token(token_address).transferFrom(msg.sender,token_address,((_increase_tokens_in_wei*10**18)/0.001 ether));
+        require(High_low_2_token(token_address).balanceOf(msg.sender)>=_increase_tokens_in_wei*1000);
+        High_low_2_token(token_address).transferFrom(msg.sender,token_address,_increase_tokens_in_wei*1000);
         game_id_map_better[msg.sender][bet_id].betted_tokens+=_increase_tokens_in_wei;
         
         if(game_id_map_better[msg.sender][bet_id].option==false)
@@ -197,8 +206,8 @@ contract High_low_2
         
         uint256 tokens_betted=game_id_map_better[msg.sender][bet_id].betted_tokens;
         game_id_map_better[msg.sender][bet_id].betted_tokens=0;
-        High_low_2_token(token_address).transferFrom(token_address, msg.sender, ((((tokens_betted*95)/100)*10**18)/0.001 ether));
-        High_low_2_token(token_address).transferFrom(token_address, bet_creator[bet_id], ((((tokens_betted*5)/100)*10**18)/0.001 ether));
+        High_low_2_token(token_address).transferFrom(token_address, msg.sender, (tokens_betted*1000*95)/100);
+        High_low_2_token(token_address).transferFrom(token_address, bet_creator[bet_id], (tokens_betted*1000*5)/100);
         
         if(game_id_map_better[msg.sender][bet_id].option==false)
         {
@@ -212,115 +221,79 @@ contract High_low_2
         }
         return true;    
     }
-    function broker_setting_result_and_distribute_money(uint256 bet_id,uint256 result_options) public payable returns(bool)// is_result_setted_and_prize_distributed 
+    function broker_setting_result_and_distribute_money(uint256 bet_id,uint256 result_options) public payable returns(bool)
     {
         require(bet_creator[bet_id]==msg.sender);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
         require(bet_status_map[bet_id].is_result_published==false);
-        require(result_options<3 && result_options>=0);
+        require(result_options<=12 && result_options>=10);  //10 ==low  11==high  12==draw
         
         
         bet_status_map[bet_id].is_result_published=true;
         bet_status_map[bet_id].final_option=result_options;
-        bool result_option;
+        //bool result_option;
         
-        /*
-        bet_creator[bet_id]
+        uint256 count = betters_of_bet_id[bet_id].length;
         
-        uint256 index=gamers_map[_game_id];
-        if(result_options==2)
+        if(result_options==12)
         {
             //draw
-            while(gamers_map[_game_id]>0)
+            while(count>0)
             {
-                if(game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount!=0)
+                if(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens>0)
                 {
-                    broker_map[game_id_map_broker[_game_id]].stake_amount+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount;
-                    broker_map[game_id_map_broker[_game_id]].stake_tokens+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens;
-                    game_id_map_trader[_game_id][gamers_map[_game_id]].better_address.transfer(game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount);
-                    Transfer_amount(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount);//trader transfer
+                    High_low_2_token(token_address).transferFrom(token_address, betters_of_bet_id[bet_id][count-1], game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*1000);
                 }
-                else if(game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens!=0)
-                {
-                    broker_map[game_id_map_broker[_game_id]].stake_amount+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount;
-                    broker_map[game_id_map_broker[_game_id]].stake_tokens+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens;
-                    High_low_token(token).transferFrom(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens);
-                }
-                gamers_map[_game_id]--;
+                count--;
             }
-            gamers_map[_game_id]=index;
             return true;
         }
-        else if(result_options==1)
+        else if(result_options==11)
         {
-            //set high as result_option
-            result_option=true;
-        }
-        else if(result_options==0)
-        {
-            //set low as result_option
-            result_option=false;
-        }
-        if(result_options==0 && result_options==1)
-        {
-            while(gamers_map[_game_id]>0)
+            //high setted as result 
+            
+            //uint256 low_high_ratio = ; 
+            while(count>0)
             {
-                if(game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount!=0)
+                if(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens>0 && game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].option==true)
                 {
-                    if(result_option==game_id_map_trader[_game_id][gamers_map[_game_id]].option)//trader wins
-                    {
-                        if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0 && game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount!=0)
-                        {
-                            High_low_token(token).transferFrom(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens);
-                            game_id_map_trader[_game_id][gamers_map[_game_id]].better_address.transfer((90*game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount)/100-(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens*100000000000000000));
-                            Transfer_amount(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,(90*game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount)/100-(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens*100000000000000000));
-                        }
-                        else if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0)
-                        {
-                            High_low_token(token).transferFrom(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,((189*(game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount/0.1 ether))/100));
-                        }
-                    }
-                    else //broker wins
-                    {
-                        broker_map[game_id_map_broker[_game_id]].stake_amount+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount;
-                        broker_map[game_id_map_broker[_game_id]].stake_tokens+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens;
-                        broker_map[game_id_map_broker[_game_id]].stake_amount+=((game_id_map_trader[_game_id][gamers_map[_game_id]].bet_amount*99)/100);
-                    }
+                    //betted tokens:   game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens
+                    //low bet token:   bet_tokens_for_low[bet_id]
+                    //high bet tokens: bet_tokens_for_high[bet_id]
+                    //(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])
+                    //((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])/bet_tokens_for_high[bet_id])
+                    //(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens+((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])/bet_tokens_for_high[bet_id]))
+                    //(1000*(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens+((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])/bet_tokens_for_high[bet_id])))
+                    //
+                    High_low_2_token(token_address).transferFrom(token_address, betters_of_bet_id[bet_id][count-1], (1000*(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens+((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])/bet_tokens_for_high[bet_id]))));
+                    game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].tokens_won=((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_low[bet_id])/bet_tokens_for_high[bet_id]);
                 }
-                else if(game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens!=0)
-                {
-                    if(result_option==game_id_map_trader[_game_id][gamers_map[_game_id]].option)//trader wins
-                    {
-                        if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0 && game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount!=0)
-                        {
-                            High_low_token(token).transferFrom(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens+game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens));
-                            game_id_map_trader[_game_id][gamers_map[_game_id]].better_address.transfer((90*game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens*100000000000000000)/100-(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens*100000000000000000));
-                            Transfer_amount(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,(90*game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens*100000000000000000)/100-(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens*100000000000000000));
-                        }
-                        else if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0)
-                        {
-                            High_low_token(token).transferFrom(this,game_id_map_trader[_game_id][gamers_map[_game_id]].better_address,(189*game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens)/100);
-                        }
-                    }
-                    else //broker wins
-                    {
-                        if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0 && game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_amount!=0)
-                        {
-                            broker_map[game_id_map_broker[_game_id]].stake_tokens+=(199*game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens)/100;
-                        }
-                        else if(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens!=0)
-                        {
-                            broker_map[game_id_map_broker[_game_id]].stake_tokens+=game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens;
-                            broker_map[game_id_map_broker[_game_id]].stake_amount+=((90*game_id_map_trader[_game_id][gamers_map[_game_id]].betted_tokens*100000000000000000)/100-(game_id_map_trader[_game_id][gamers_map[_game_id]].reduced_stake_tokens*100000000000000000));
-                        }
-                    }
-                }
-                gamers_map[_game_id]--;
+                count--;
             }
-            gamers_map[_game_id]=index;
             return true;
         }
-        */
+        
+        else if(result_options==10)
+        {
+            //low setted as result 
+            
+            while(count>0)
+            {
+                if(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens>0 && game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].option==false)
+                {
+                    //betted tokens:   game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens
+                    //low bet token:   bet_tokens_for_low[bet_id]
+                    //high bet tokens: bet_tokens_for_high[bet_id]
+                    //(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_high[bet_id])
+                    //((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_high[bet_id])/bet_tokens_for_low[bet_id])
+                    //(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens+((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_high[bet_id])/bet_tokens_for_low[bet_id]))
+                    High_low_2_token(token_address).transferFrom(token_address, betters_of_bet_id[bet_id][count-1], (1000*(game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens+((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_high[bet_id])/bet_tokens_for_low[bet_id])))); 
+                    game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].tokens_won=((game_id_map_better[betters_of_bet_id[bet_id][count-1]][bet_id].betted_tokens*bet_tokens_for_high[bet_id])/bet_tokens_for_low[bet_id]);
+                }
+                count--;
+            }
+            return true;
+        }
+        return true;
     }
-    
 }
