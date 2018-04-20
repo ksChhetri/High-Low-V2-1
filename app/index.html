@@ -1,23 +1,337 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>MetaCoin - Truffle Webpack Demo w/ Frontend</title>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <script src="./app.js"></script>
-</head>
-<body>
-  <h1>MetaCoin</h1>
-  <h2>Example Truffle Dapp</h2>
-  <h3>You have <span class="black"><span id="balance"></span> META</span></h3>
+  <title>High Low</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+ <script src="app.js"></script>
+  <style>
+.navbar-default  {
+    color: #FFFFFF;
+    background-color: white;
+    height: 100%; 
+}
+.navbar-brand {
+  padding: 0px;
+}
+.navbar-brand>img {
+  height: 100%;
+  padding: 3px;
+  width: auto;
+}
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 2s5px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+table {
+    border-collapse: collapse;
+    border: 5px solid white;
+    background-color: white;
+    width: 100%;
+    height: 100%; 
+}
+div#description {
+        background-color: gray;
+        height: 25%;
+        border: 2px black;
+    }
+    tr {
+        line-height: 55px;
+    }
+    .container {
+        height: 100%
+    }
+    
+    #topics tr {
+        line-height: 24px;
+    }
+    button {
+    background-color: #0080ff;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 35%;
+    opacity: 0.9;
+}
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-  <br>
-  <h1>Send MetaCoin</h1>
-  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
-  <br><label for="receiver">To Address:</label><input type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input>
-  <br><br><button id="send" onclick="App.sendCoin()">Send MetaCoin</button>
-  <br><br>
-  <span id="status"></span>
-  <br>
-  <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
+.button1 {font-size: 12px;  }
+button:hover {
+    opacity:1;
+}
+th,h6
+{
+  color: LightSlateGray;
+}
+output
+{
+  color: white;
+}
+input{
+   text-align:center;
+}
+.ui-datepicker { font-size:9pt !important}
+.danger {background-color: #f44336;} /* Red */ 
+.danger:hover {background: #da190b;}
+.mytxt{
+  background-color: transparent;
+  color: black;
+  outline: none;
+  outline-style: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid black 1px;
+  padding: 3px 10px;
+  width:160px;
+}
+}
+.header th {
+       height: 2px;
+       line-height: 2px;
+       width:1px;
+    }
+
+
+  </style>
+</head>
+<body style="background-color:rgb(240, 240, 240);">
+    <nav class="navbar navbar-default">
+                  <div class="container">
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                      <a class="navbar-brand"><img src="high_low1.jpg" alt="Dispute Bills">
+                      </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    </div>
+                    <div id="navbar1" class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">User</a></li>
+                        <li><a href="#">Broker</a></li>
+                      </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                  </div>
+                  <!--/.container-fluid -->
+                </nav>
+              </div>
+              &nbsp;
+       <div class="container" style="background:white;height:120px;width:1200px;">
+       <nav class=" navbar container" ><br>
+        <div>
+                &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                <label for="account"><h4>Eth Balance:</h4><input type="text" class="form-control" id="account" readonly/></label> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                <label for="account"><h4>Token Balance:</h4><input type="text" class="form-control" id="account" readonly/></label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button type="button"  value="Create Bet" data-toggle="modal" data-target="#myModal" >Create Bet</Button>
+      </div>   
+      </nav>
+    </div>  
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <!--<div class="container" style="height:200px;width:1230px;">
+      <table class="table" >
+               <thead>
+                    <tr>
+                          <th>Bet Id</th>
+                          <th>Details</th>
+                          <th>Team</th>
+                          <th>Star Date/Time</th>
+                          <th>End Date/Time</th>   
+                          <th>.</th>      
+                          <th>.</th>  
+                          <th>.</th>  
+                          <th>.</th>  
+                    </tr>
+                  </thead>
+                <tbody id="fi_loan_list">
+
+                </tbody>
+              </table>
+          </div>  -->
+          <div class="container" style="height:200px;width:1230px;">
+                <table class="table" style="background:white;">
+                  <thead class="header">
+                   <tr style="background:white">
+                     <th >BetId</th>
+                     <th >Details</th>
+                     <th >Team</th>
+                     <th>Start Time/Date</th>
+                     <th >End Time/Date</th>
+                     <th > </th>
+                     <th > </th>
+                     <th > </th>
+                     <th > </th>
+                   </tr>
+                 </thead>
+                 <tbody id="broker_list">
+                  
+                 </tbody >
+               </table>
+             </div>
+            
+          <div class="container">
+                <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">      
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Create Betting</h4>
+                      </div>
+                      <form class="modal-content" oninput="x.value=a.value,y.value=b.value">
+                      <div class="modal-body">
+                            <table>
+                                    <thead>
+                                      <tr>
+                                       <td><input type="text"  id="a" placeholder="Team A" name="" required></td>
+                                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<td>VS</td>
+                                        <td><input type="text" id="b" placeholder="Team B" name="" required></td>
+                                      </tr>
+                                      </thead>
+                                    </table>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button type="button" class="button" id="button1"  value="false" onclick="App.myFunction(this);"><output name="x" for="a">Team A</output></button>
+                                        <button type="button" class="button" id="button2"  value="true" onclick="App.myFunction1(this);"><output name="y" for="b">Team B</output></button>
+                                   
+                                    <center>
+                                            <label for="account">Start Time:<input type="text" name="daterange"class="form-control" id="edate" value=""readonly/></label>
+                                            <label for="account">End Time:<input type="text" name="daterange1" class="form-control" id="edate1" readonly/></label>
+                                        </center>
+                      </div>
+                      <div class="modal-footer">
+                          <center>
+                        <button type="button"  onclick="App.create_bet();">Create Bet</button>
+                        <button type="button" style="background-color:hsl(0, 80%, 50%)" class="cancelbtn" data-dismiss="modal">Close</button>
+                    </center>
+                       </div>
+                    </form>
+                    </div>
+                    
+                  </div>
+                </div>
+                
+              </div>
+                  <div class="container">
+                    <div class="modal fade" id="myModal1" role="dialog">
+                            <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                          <div class="modal-header">      
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Stop Bet</h4>
+                          </div>
+                         
+                          <div class="modal-body">
+                              <center>
+                               <h3>Are You Sure To Stop Bet</h3>
+                            <button type="button" id=""  onclick="">StopBet</button>
+                        </center>      
+                          </div>
+                          <div class="modal-footer">
+                              <center>
+                            <button type="button" >submit</button>
+                            <button type="button"  style="background-color:hsl(0, 80%, 50%)"  data-dismiss="modal">Close</button>
+                        </center>
+                           </div>
+                     
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="container">
+                        
+                        <!-- Trigger the modal with a button -->
+                        
+                      
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal2" role="dialog">
+                          <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Modal Header</h4>
+                              </div>
+                              <div class="modal-body">
+                                    <form action="">
+                                  
+                                    <input type="radio" name="gender" value="High"> High<br>
+                                    <input type="radio" name="gender" value="Low"> Low<br>
+                                    <input type="radio" name="gender" value="Draw"> Draw
+                               
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                    <center>
+                                    <button type="button" >submit</button>
+                                <button type="button"  style="background-color:hsl(0, 80%, 50%)" data-dismiss="modal">Close</button>
+                                </center>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    
+            
+    <script>
+          // Get the modal
+          var modal = document.getElementById('id01');
+          
+          // When the user clicks anywhere outside of the modal, close it
+          window.onclick = function(event) {
+              if (event.target == modal) {
+                  modal.style.display = "none";
+              }
+          }
+          
+
+/*function myFunction() {
+document.getElementById("a").disabled = true;
+document.getElementById("b").disabled = true;
+document.getElementById("button2").disabled = true;
+}
+function myFunction1() {
+document.getElementById("a").disabled = true;
+document.getElementById("b").disabled = true;
+document.getElementById("button1").disabled = true;
+}*/
+
+$('input[name="daterange"]').daterangepicker({
+    "singleDatePicker": true,
+    "timePicker": true,
+    "timePickerSeconds": true,
+    "timePickerMinutes":true, 
+    locale: {
+      format: 'MM/DD/YYYY H:mm:ss'
+    }
+  });
+  $('input[name="daterange1"]').daterangepicker({
+    "singleDatePicker": true,
+    "timePicker": true,
+    "timePickerSeconds": true,
+    "timePickerMinutes":true, 
+    locale: {
+      format: 'MM/DD/YYYY H:mm:ss'
+    }
+  });
+</script>
 </body>
 </html>

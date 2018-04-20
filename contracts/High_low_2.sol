@@ -125,7 +125,7 @@ contract High_low_2
     
     function contract_ether_balance() public constant returns(uint256)
     {
-        return this.balance;
+        return address(this).balance;
     }
     
     function contract_token_balance() public constant returns(uint256)
@@ -218,7 +218,7 @@ contract High_low_2
     function broker_set_game(string _team_1, string _team_2, bool _team_selecetd, uint256 _start_time, uint256 _expiry_time) public payable returns(bool) // newbet, new_game_id
     {
         require(_expiry_time>now && _start_time>now && _expiry_time>_start_time);
-        require(is_broker[msg.sender]==true);
+        //require(is_broker[msg.sender]==true);
         _bet_id++;
         broker_created_bets[msg.sender]++;
         bet_details_map[msg.sender][broker_created_bets[msg.sender]].bet_id=_bet_id;

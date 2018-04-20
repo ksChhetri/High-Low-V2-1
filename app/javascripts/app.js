@@ -16,7 +16,7 @@ var MetaCoin = contract(metacoin_artifacts);
 // For application bootstrapping, check out window.addEventListener below.
 var accounts;
 var account;
-
+var select;
 window.App = {
   start: function() {
     var self = this;
@@ -38,54 +38,63 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
-
-      self.refreshBalance();
+      self.broker_list();
+    //  self.refreshBalance();
     });
   },
-
-  setStatus: function(message) {
-    var status = document.getElementById("status");
-    status.innerHTML = message;
+ 
+  myFunction: function(m) {
+    document.getElementById("a").disabled = true;
+    document.getElementById("b").disabled = true;
+    document.getElementById("button2").disabled = true;
+    select =m.value;
+    console.log(select);
   },
+  myFunction1: function(m) {
+    document.getElementById("a").disabled = true;
+    document.getElementById("b").disabled = true;
+    document.getElementById("button1").disabled = true;
+    select =m.value;
+   console.log(select);
+  },  
 
-  refreshBalance: function() {
+  broker_list:function(){
+  
+   var self= this;
+   $("#broker_list").html('');
+   for(var i=0;i<10;i++)
+   {
+      $("#broker_list").append('<tr><td rowspan="1">'+i+'</td><td>'+i+'</td><td>'+i+'</td><td>'+i+'</td><td>'+i+'</td><td style="color:green">'+i+" &#9650;"+'</td><td style="color:red">'+i+"&#9660;"+'</td><td> <button type="button"  style="padding: 8px 60px;" data-toggle="modal" data-target="#myModal1"><center>Stop Bet</button></td><td> <button type="button"  style="padding: 8px 50px;" data-toggle="modal" data-target="#myModal2">Declare Bet</button></td></tr>');
+      $("#broker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>active</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');    
+   }
+  },
+  create_bet: function() {
     var self = this;
+
+    var teamA = document.getElementById("a").value;
+    var teamB = document.getElementById("b").value;
+    var etime = $("#edate").val();
+    etime = parseInt(Math.round(new Date(etime))/1000.0);
+    var etime1 = $("#edate1").val();
+    etime1 = parseInt(Math.round(new Date(etime1))/1000.0);
+    console.log(etime);
+    console.log(etime1);
+    console.log(select);
+    console.log(teamA);
+    console.log(teamB);
 
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.getBalance.call(account, {from: account});
-    }).then(function(value) {
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = value.valueOf();
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
-    });
-  },
-
-  sendCoin: function() {
-    var self = this;
-
-    var amount = parseInt(document.getElementById("amount").value);
-    var receiver = document.getElementById("receiver").value;
-
-    this.setStatus("Initiating transaction... (please wait)");
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
+      return meta.broker_set_game(teamA,teamB,select,etime,etime1,{from: account});
     }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
+      
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
+     
     });
   }
 };
-
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
