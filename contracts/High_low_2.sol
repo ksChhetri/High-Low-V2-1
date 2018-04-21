@@ -56,9 +56,9 @@ contract High_low_2
         balances[this]= _totalSupply;
     }
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Transfer(address indexed_from, address indexed_to, uint256 _value);
     
-    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+    event Approval(address indexed_owner, address indexed_spender, uint256 _value);
     
     function totalSupply() public constant returns (uint256) 
     {
