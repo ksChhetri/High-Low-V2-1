@@ -149,9 +149,8 @@ contract High_low_2
         bool team_selecetd;
         uint256 start_time;
         uint256 expiry_time;
-        uint256 result;//10=low 11=high 12=draw
     }
-    mapping(address=>mapping(uint256=>bet_details)) public bet_details_map; // key 1: better_address key2:broker_bets(iterate this)
+    mapping(address=>mapping(uint256=>bet_details)) public bet_details_map; // key 1: broker_address key2:broker_bets(iterate this)
     
     mapping(uint256=>uint256) public index_of_broker_bet;//key:bet_id  value: index_of_broker_bet(broker_created_bets)
     
@@ -177,6 +176,11 @@ contract High_low_2
     mapping(uint256=>uint256) public low_betters;
     
     mapping(uint256=>uint256) public high_betters;
+
+    function get_better_betted_bets_length() public constant returns(uint256)
+    {
+        better_betted_bets[msg.sender].length;
+    }
     
     struct bet_status
     {
@@ -218,7 +222,7 @@ contract High_low_2
     function broker_set_game(string _team_1, string _team_2, bool _team_selecetd, uint256 _start_time, uint256 _expiry_time) public payable returns(bool) // newbet, new_game_id
     {
         require(_expiry_time>now && _start_time>now && _expiry_time>_start_time);
-        //require(is_broker[msg.sender]==true);
+        require(is_broker[msg.sender]==true);
         _bet_id++;
         broker_created_bets[msg.sender]++;
         bet_details_map[msg.sender][broker_created_bets[msg.sender]].bet_id=_bet_id;
@@ -272,6 +276,7 @@ contract High_low_2
         bet_status_map[bet_id].is_bet_stopped=true;
         return true;
     }
+    
     function better_increase_bet_tokens(uint256 bet_id,uint256 _increase_tokens_in_wei) public payable returns(bool)// is_increase_success
     {
         require(game_id_map_better[msg.sender][bet_id].betted_tokens>0);
