@@ -52,7 +52,7 @@ contract High_low_2
         symbol = "HLT";
         name = "High Low Token";
         decimals = 18;
-        _totalSupply = 1 * 10**uint(decimals);
+        _totalSupply = 10000000 * 10**uint(decimals);
         balances[this]= _totalSupply;
     }
 
@@ -221,7 +221,7 @@ contract High_low_2
     
     function broker_set_game(string _team_1, string _team_2, bool _team_selecetd, uint256 _start_time, uint256 _expiry_time) public payable returns(bool) // newbet, new_game_id
     {
-        require(_expiry_time>now && _start_time>now && _expiry_time>_start_time);
+        require(_expiry_time>now && _start_time>(now-2 minutes) && _expiry_time>_start_time);
         require(is_broker[msg.sender]==true);
         _bet_id++;
         broker_created_bets[msg.sender]++;
@@ -240,7 +240,6 @@ contract High_low_2
     {
         require(_bet_tokens_in_wei>0);
         require(balanceOf(msg.sender)>=_bet_tokens_in_wei*1000);
-        require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].start_time<=now);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
         require(bet_status_map[bet_id].is_bet_stopped==false);
         require(game_id_map_better[msg.sender][bet_id].betted_tokens==0);
