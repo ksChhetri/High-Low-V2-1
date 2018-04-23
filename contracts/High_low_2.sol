@@ -179,7 +179,7 @@ contract High_low_2
 
     function get_better_betted_bets_length() public constant returns(uint256)
     {
-        better_betted_bets[msg.sender].length;
+        return better_betted_bets[msg.sender].length;
     }
     
     struct bet_status
