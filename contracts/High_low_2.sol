@@ -319,7 +319,7 @@ contract High_low_2
     function broker_setting_result_and_distribute_money(uint256 bet_id,uint256 result_options) public payable returns(bool)
     {
         require(bet_creator[bet_id]==msg.sender);
-        require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
+        require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time<=now);
         require(bet_status_map[bet_id].is_result_published==false);
         require(result_options<=12 && result_options>=10);  //10 ==low  11==high  12==draw
         
