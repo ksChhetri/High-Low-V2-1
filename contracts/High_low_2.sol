@@ -241,6 +241,7 @@ contract High_low_2
         require(_bet_tokens_in_wei>0);
         require(balanceOf(msg.sender)>=_bet_tokens_in_wei*1000);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
+        require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].start_time<=now);
         require(bet_status_map[bet_id].is_bet_stopped==false);
         require(game_id_map_better[msg.sender][bet_id].betted_tokens==0);
         require(_choice==1||_choice==0);

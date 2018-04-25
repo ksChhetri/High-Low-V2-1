@@ -20,6 +20,7 @@ var select;
 var stopbetid;
 var declarebetid;
 var passvalue;
+var passtime;
 window.App = {
   start: function() {
     var self = this;
@@ -46,8 +47,7 @@ window.App = {
       self.sri();
       self.basicfunctions();
       self.user_table();
-      self.tokenvalue();
-     
+      self.tokenvalue();  
     //  self.refreshBalance();
     });
   },
@@ -145,40 +145,26 @@ window.App = {
     var meta;
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
-    console.log(date);
     $("#user_table").html('')
      MetaCoin.deployed().then(function(instance) {
       meta = instance;
       return meta.get_better_betted_bets_length({from: account});
     }).then(function(val1) {
-    
-     
-       
       for(var i=0;i<val1.toNumber();i++)
       {
         meta.better_betted_bets(account,i).then(function(val2){
-        
-        meta.bet_creator(val2).then(function(val3){
-          console.log(val2);
+        meta.bet_creator(val2).then(function(val3){ 
       meta. index_of_broker_bet(val2).then(function(val4,err){
-        console.log(parseInt(val4));
         meta.bet_details_map(val3,val4).then(function(data,err){
           meta.bet_status_map(data[0]).then(function(data1,err){
             meta. game_id_map_better(account,data[0]).then(function(data2,err){
-              
               meta. high_betters(data[0]).then(function(data3,err){
                 meta.low_betters(data[0]).then(function(data4,err){
-                  
-            console.log(data)
-            console.log(data1)
             var a=parseInt(data1[2]);
-            console.log(a);
-            console.log(data2[0]);
             if(data2[1]>0)
             {
             if(data1[0]==true)
             {
-              console.log("op");
               if(a==0)
               {
                 if(data[3]==false)
@@ -409,20 +395,15 @@ window.App = {
     var meta;
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
-    console.log(date);
     $("#broker_list").html('')
      MetaCoin.deployed().then(function(instance) {
       meta = instance;
       return meta.length_of_broker_addresses();
     }).then(function(val1) {
-      console.log(parseInt(val1));
       for(var a=0;a<val1.toNumber();a++)
       {
         meta.get_broker_address(a).then(function(val2){
-          console.log(val2);
       meta. broker_created_bets(val2).then(function(val,err){
-        console.log(parseInt(val));
-     
        for(var i=val.toNumber();i>=1;i--)
        {
         meta.bet_details_map(val2,i).then(function(data,err){
@@ -430,15 +411,11 @@ window.App = {
             meta. high_betters(data[0]).then(function(data3,err){
               meta.low_betters(data[0]).then(function(data4,err){
                 meta. game_id_map_better(account,data[0]).then(function(data2,err){
-            console.log(data)
-            console.log(data1)
             var a=parseInt(data1[2]);
-            console.log(a);
             if(data2[1]>0)
             {
             if(data1[0]==true)
             {
-              console.log("op");
               if(a==0)
               {
                 if(data[3]==false)
@@ -568,7 +545,6 @@ window.App = {
           {
             if(data1[0]==true)
             {
-              console.log("op");
               if(a==0)
               {
                 if(data[3]==false)
@@ -684,12 +660,12 @@ window.App = {
             else 
             if(data[3]==false)
             {
-              $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td> <button type="button" data-toggle="modal" style="padding: 3px 50px;" data-target="#bet" class="button"  onclick="App.pval('+data[0]+');" >Bet</button></td></tr>');
+              $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td> <button type="button" data-toggle="modal" style="padding: 3px 50px;" data-target="#bet" class="button"  onclick="App.pval('+data[0]+','+data[4]+');" >Bet</button></td></tr>');
               $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
 
           }
             else{
-              $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td> <button type="button" data-toggle="modal" style="padding: 3px 50px;" data-target="#bet" class="button"  onclick="App.pval('+data[0]+');" >Bet</button></td></tr>');
+              $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td> <button type="button" data-toggle="modal" style="padding: 3px 50px;" data-target="#bet" class="button"  onclick="App.pval('+data[0]+','+data[4]+');" >Bet</button></td></tr>');
               $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
 
             }
@@ -705,30 +681,29 @@ window.App = {
     }
     });
   },
-  pval:function (pass)
+  pval:function (pass,time)
   {
  
   passvalue=pass;
-  //betting(passvalue);
+  passtime=time;
   },
   //betting popup
   betting : function() {
       var self = this;
   
   var betid = parseInt(passvalue);
+  var bettime = parseInt(passtime);
   var choice = $("input[name='optradio']:checked").val();
   var bettokeninwei = document.getElementById('incbet').value*0.001;
-  
-      console.log(betid);
-      console.log(choice);
-      console.log(web3.toWei(bettokeninwei, 'ether'));
-  
+  var date=new Date().toLocaleString();
+  date = parseInt(Math.round(new Date(date))/1000.0);
       var meta;
       MetaCoin.deployed().then(function(instance) {
         meta = instance;
         return meta.balanceOf(account,{from:account,gas: 6000000 });
       }).then(function(val) {
-
+        if(bettime<=date)
+        {
         if(val>bettokeninwei)
         {
         meta. betting(betid,choice,web3.toWei(bettokeninwei, 'ether'),{from:account,gas: 6000000 }).then(function(data2,err){
@@ -737,6 +712,11 @@ window.App = {
       else{
         alert("Insuficent Token Balance");
       }
+    }
+    else
+    {
+      alert("You Need To Wait Upto Start Time");
+    }
       }).catch(function(e) {
         console.log(e);
        
@@ -749,11 +729,6 @@ window.App = {
   
   var betid = parseInt(passvalue);
   var incresetoken = document.getElementById('onlynum').value*0.001;
-  
-    console.log(betid);
-    console.log(incresetoken);
-   
-  
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
@@ -769,8 +744,6 @@ window.App = {
   better_exit_bet : function() {
     var self = this;
   var betid = parseInt(passvalue);
-    console.log(betid);
-  
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
@@ -782,17 +755,11 @@ window.App = {
      
     });
   },
-  
   //  purchase token
   buy_token : function() {
     var self = this;
-  
     var meta;
-    
     var num1 = parseFloat(document.getElementById('num').value)*0.001;
-    //num1=num1;
-    console.log(web3.toWei(num1,'ether'));
-    console.log(num1);
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
       return meta.buy_token({from:account,value: web3.toWei(num1,'ether'),gas: 6000000});
@@ -804,12 +771,9 @@ window.App = {
     });
   },
   // sell token
-  
-  exchange_token : function() {
+   exchange_token : function() {
     var self = this;
   var covertTokentoEther = parseFloat(document.getElementById('selltk').value) *0.001;
-    console.log(covertTokentoEther);
-  
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
@@ -821,32 +785,23 @@ window.App = {
      
     });
   },
-  
   myFunction: function(m) {
     document.getElementById("a").disabled = true;
 document.getElementById("b").disabled = true;
 document.getElementById("button2").disabled = true;
      select =m.value;
-    console.log(select);
   },
   myFunction1: function(m) {
     document.getElementById("a").disabled = true;
 document.getElementById("b").disabled = true;
 document.getElementById("button1").disabled = true;
    select =m.value;
-   console.log(select);
   },  
   stop_bet: function(m) {
-    
-   stopbetid =parseInt(m);
-   
-   console.log(stopbetid);
+     stopbetid =parseInt(m);
   },  
   declare_bet: function(m) {
-    
     declarebetid =parseInt(m);
-    
-    console.log(declarebetid);
    },
   broker_list:function(){
    
@@ -854,29 +809,21 @@ document.getElementById("button1").disabled = true;
     var meta;
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
-    console.log(date);
     $("#broker_list").html('')
-   
      MetaCoin.deployed().then(function(instance) {
       meta = instance;
-     
       return meta.broker_created_bets(account);
     }).then(function(val) {
-     
        for(var i=val.toNumber();i>=1;i--)
        {
-       
         meta.bet_details_map(account,i).then(function(data,err){
           meta.bet_status_map(data[0]).then(function(data1,err){
             meta. high_betters(data[0]).then(function(data3,err){
               meta.low_betters(data[0]).then(function(data4,err){
-            console.log(data)
-            console.log(data1)
             var a=parseInt(data1[2]);
              if(data1[0]==true)
             {
-              console.log("op");
-              if(a==0)
+              if(a==0&&data[5]<date)
               {
                
                 if(data[3]==false)
@@ -889,6 +836,23 @@ document.getElementById("button1").disabled = true;
                 else{
                 
                $("#broker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td> <button type="button"  style="padding: 3px 50px;"  onclick="App.declare_bet('+data[0]+');" data-toggle="modal" data-target="#myModal2">Declare Bet</button></td></tr>');
+               $("#broker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+    
+                }
+              }
+              if(a==0)
+              {
+               
+                if(data[3]==false)
+                {
+                 
+                $("#broker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#broker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+    
+              }
+                else{
+                
+               $("#broker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
                $("#broker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
     
                 }
@@ -1044,23 +1008,6 @@ sri:function()
   }
   
 },
-
-  /*refreshBalance: function() {
-    var self = this;
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account, {from: account});
-    }).then(function(value) {
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = value.valueOf();
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
-    });
-  },*/
-
   stopbet: function() {
     var self = this;
 
@@ -1080,7 +1027,6 @@ sri:function()
     var self = this;
     var result=  parseInt($("input[name='gender']:checked").val().trim());
     var meta;
-    //console.log(result);
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
       return meta.broker_setting_result_and_distribute_money(declarebetid, result, {from: account,gas: 6000000});
@@ -1100,12 +1046,6 @@ sri:function()
     etime = parseInt(Math.round(new Date(etime))/1000.0);
     var etime1 = $("#edate1").val();
     etime1 = parseInt(Math.round(new Date(etime1))/1000.0);
-    console.log(etime);
-    console.log(etime1);
-    console.log(select);
-    console.log(teamA);
-    console.log(teamB);
-
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
@@ -1114,7 +1054,6 @@ sri:function()
       
     }).catch(function(e) {
       console.log(e);
-     
     });
   }
 };
