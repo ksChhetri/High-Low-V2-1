@@ -124,37 +124,27 @@ input{
        line-height: 2px;
        width:1px;
     }
-
+   
 
   </style>
 </head>
-<body style="background-color:rgb(240, 240, 240);" >
-    <nav class="nav nav-tabs"  style="background:white";>
-                  <div class="container">
-                    <div class="navbar-header">
-                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                      </button>
-                      <a class="navbar-brand"><img src="high_low1.jpg" alt="Dispute Bills">
-                      </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    </div>
-                    <div id="navbar1" class="navbar-collapse collapse">
-                      <ul class="nav navbar-nav">
-                        <li class="active"><a data-toggle="tab" href="#user_page" >User</a></li>
-                        <li><a data-toggle="tab" href="#broker_page">Broker</a></li>
-                      </ul>
-                    </div>
-                    <!--/.nav-collapse -->
-                  </div>
-                  <!--/.container-fluid -->
-                </nav>
-              </div>
+<body style="background-color:rgb(240, 240, 240);" onload="App.user()" >
+  <nav class="navbar navbar-default" style="background:white";>
+    
+      
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" ><img src="high_low1.jpg" alt="Dispute Bills"></a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li onload="App.user()"><a href="#" onclick="App.user1()">User</a></li>
+        <li><a href="#" onclick="App.broker()">Broker</a></li>
+      </ul>
+    </div>
+  </nav>
               &nbsp;
-<div class="tab-content">              
-  <div id="user_page" class="tab-pane fade in active" >
+             
+  <div id="user_page" class="active">
       <div class="container" style="background:white;height:120px;width:1200px;">
           <nav class=" navbar container" ><br>
            <div>
@@ -168,17 +158,17 @@ input{
 </div>
 &nbsp;&nbsp;&nbsp;&nbsp;
                <!--unbeted table-->
-               <div class="container" style="height:200px;width:1230px;">
+               <div class="container" style="height:400px;width:1230px;">
                   <table class="table" style="background:white;overflow-y:scroll;display:block;" >
                    <thead>
                      <tr style="background:white">
-                       <th>BetId</th>
+                       <th>Bet Id</th>
                        <th>Details</th>
                        <th>Team</th>
                        <th>Start Time/Date</th>
                        <th>End Time/Date</th>
-                       <th>High</th><!--&#9660; &#9650;-->
-                       <th>Low </th>
+                       <th>Win</th><!--&#9660; &#9650;-->
+                       <th>Loss</th>
                        <th> </th>
                        <th> </th>
                        <th> </th>
@@ -193,17 +183,17 @@ input{
                </div>
  <br>
  <!--Betted table-->
- <div class="container" style="height:200px;width:1230px;">
+ <div class="container" style="height:500px;width:1230px;">
     <table class="table" style="background:white;overflow-y:scroll;display:block;" >
      <thead>
        <tr style="background:white">
-         <th>BetId</th>
+         <th>Bet Id</th>
          <th>Details</th>
          <th>Team</th>
          <th>Start Time/Date</th>
          <th>End Time/Date</th>
-         <th>High</th><!--&#9660; &#9650;-->
-         <th>Low </th>
+         <th>Win</th><!--&#9660; &#9650;-->
+         <th>Loss </th>
          <th> </th>
          <th> </th>
          <th> </th>
@@ -280,10 +270,10 @@ input{
                       
                       <div class="modal-body">
                           <label class="radio-inline">
-                              <input type="radio" value ="1" name="optradio">High
+                              <input type="radio" value ="1" name="optradio">Win
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" value="0" name="optradio">Low
+                                <input type="radio" value="0" name="optradio">Loss
                               </label><br><br><br>
                               <input type="text" id="incbet" placeholder="number">
                    
@@ -350,7 +340,7 @@ input{
                      </div>
 </div>
 &nbsp;
-<div id="broker_page" class="tab-pane fade">
+<div id="broker_page" >
        <div class="container" style="background:white;height:120px;width:1200px;">
        <nav class=" navbar container" ><br>
         <div>
@@ -363,17 +353,17 @@ input{
     </div>  
     &nbsp;&nbsp;&nbsp;&nbsp;
     
-          <div class="container" style="height:200px;width:1230px;">
+          <div class="container" style="height:700px;width:1230px;">
             <table class="table" style="background:white;overflow-y:scroll;display:block;" >
-             <thead>
+             <thead >
                <tr style="background:white">
-                 <th>BetId</th>
+                 <th>Bet Id</th>
                  <th>Details</th>
                  <th>Team</th>
                  <th>Start Time/Date</th>
                  <th>End Time/Date</th>
-                 <th>High</th><!--&#9660; &#9650;-->
-                 <th>Low </th>
+                 <th>Win</th><!--&#9660; &#9650;-->
+                 <th>Loss</th>
                  <th> </th>
                  <th> </th>
                  <th> </th>
@@ -386,7 +376,6 @@ input{
              </tbody>
            </table>
          </div>
-         <button type="button"  style="padding: 3px 60px;" data-toggle="modal"  data-target="#myModal3">Add Broker</button> 
           <div class="container">
                 <div class="modal fade" id="myModal" role="dialog">
                         <div class="modal-dialog">
@@ -455,8 +444,8 @@ input{
                     </div>
                     
                   </div>
-                  <div class="container">
-                    <div class="modal fade" id="myModal3" role="dialog">
+                 
+                    <div class="modal fade out" id="myModal3" role="dialog" display="block">
                             <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                           <div class="modal-header">      
@@ -481,7 +470,7 @@ input{
                       </div>
                     </div>
                     
-                  </div>
+                
                   <div class="container">
                         
                         <!-- Trigger the modal with a button -->
@@ -498,8 +487,8 @@ input{
                               <div class="modal-body">
                                     <form action="">
                                   
-                                    <input type="radio" name="gender" value="11"> High<br>
-                                    <input type="radio" name="gender" value="10"> Low<br>
+                                    <input type="radio" name="gender" value="11"> Win<br>
+                                    <input type="radio" name="gender" value="10"> Loss<br>
                                     <input type="radio" name="gender" value="12"> Draw
                                
                                 </form>
@@ -515,7 +504,7 @@ input{
                         </div>
                       </div>
  </div>                      
-</div>                   
+               
             
     <script>
           // Get the modal
@@ -599,6 +588,7 @@ $('#onlynum').keypress(function(evt) {
   }
   return true;
 });
+
 </script>
 </body>
 </html>
