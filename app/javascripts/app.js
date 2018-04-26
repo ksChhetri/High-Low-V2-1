@@ -162,7 +162,7 @@ window.App = {
                 meta.low_betters(data[0]).then(function(data4,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
-            {
+          {
             if(data1[0]==true)
             {
               if(a==0)
@@ -352,12 +352,12 @@ window.App = {
            else
            if(data[3]==false)
             {
-              $("#user_table").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td><button type="button" class="button"  data-toggle="modal" onclick="App.pval('+data[0]+');" data-target="#increasebet" >Increase Bet</td><td><button type="button" data-toggle="modal" data-target="#exitbet"  onclick="App.pval('+data[0]+');" class="button" >Exit</td></tr>');
+              $("#user_table").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td><button type="button" class="button"  data-toggle="modal" onclick="App.pval('+data[0]+','+web3.fromWei(data2[1]*1000, 'ether')+');" data-target="#increasebet" >Increase Bet</td><td><button type="button" data-toggle="modal" data-target="#exitbet"  onclick="App.pval('+data[0]+');" class="button" >Exit</td></tr>');
               $("#user_table").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"No Of Token:"+'</td><td>'+web3.fromWei(data2[1]*1000, 'ether')+'</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
 
           }
             else{
-              $("#user_table").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td><button type="button" class="button"  data-toggle="modal" onclick="App.pval('+data[0]+');" data-target="#increasebet" >Increase Bet</td><td><button type="button" data-toggle="modal" data-target="#exitbet"  onclick="App.pval('+data[0]+');" class="button" >Exit</td></tr>');
+              $("#user_table").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td><button type="button" class="button"  data-toggle="modal" onclick="App.pval('+data[0]+','+web3.fromWei(data2[1]*1000, 'ether')+');" data-target="#increasebet" >Increase Bet</td><td><button type="button" data-toggle="modal" data-target="#exitbet"  onclick="App.pval('+data[0]+');" class="button" >Exit</td></tr>');
               $("#user_table").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"No Of Token:"+'</td><td>'+web3.fromWei(data2[1]*1000, 'ether')+'</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
 
             }    
@@ -411,6 +411,7 @@ window.App = {
             meta. high_betters(data[0]).then(function(data3,err){
               meta.low_betters(data[0]).then(function(data4,err){
                 meta. game_id_map_better(account,data[0]).then(function(data2,err){
+                  meta.is_exit(account,data[0]).then(function(data5,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
             {
@@ -541,7 +542,7 @@ window.App = {
 
             } 
           }
-          else
+          else if(data2[1]<=0&&data5==false)
           {
             if(data1[0]==true)
             {
@@ -670,6 +671,136 @@ window.App = {
 
             }
         }
+        else 
+        {
+          if(data1[0]==true)
+          {
+            if(a==0)
+            {
+              if(data[3]==false)
+              {
+              $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+              $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }
+            }
+            if(a==10)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td><td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Loss</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Loss</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }              }
+            if(a==11)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Won</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Won</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }              }
+            if(a==12)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Draw</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Draw</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }              
+            }
+          }
+         else if(data[5]<date)
+          {
+            if(a==0)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }
+            }
+            if(a==10)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Loss</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Loss</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }              }
+            if(a==11)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Won</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Won</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }              }
+            if(a==12)
+            {
+              if(data[3]==false)
+              {
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Draw</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+            }
+              else{
+                $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+                $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>closed</td><td>'+"Bet Result:"+'</td><td>Draw</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+  
+              }           
+          }
+        }
+          else 
+          if(data[3]==false)
+          {
+            $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[1]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+            $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+
+        }
+          else{
+            $("#totalbroker_list").append('<tr><td rowspan="1">'+data[0]+'</td><td>'+data[1]+"/"+data[2]+'</td><td>'+data[2]+'</td><td>'+new Date(data[4].toNumber()*1000).toLocaleString()+'</td><td>'+new Date(data[5].toNumber()*1000).toLocaleString()+'</td><td style="color:green">'+data3+" &#9650;"+'</td><td style="color:red">'+data4+"&#9660;"+'</td></tr>');
+            $("#totalbroker_list").append('<tr style="background:rgb(250,250,250)"><td>'+"status:"+'</td><td>Active</td><td>'+"Bet Result:"+'</td><td>Pending</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+
+          }
+      }
+      });
         });
           });
         });              
@@ -686,6 +817,7 @@ window.App = {
  
   passvalue=pass;
   passtime=time;
+  $("#inccbet").val(passtime);
   },
   //betting popup
   betting : function() {
@@ -732,9 +864,10 @@ window.App = {
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.better_increase_bet_tokens(betid, web3.toWei(incresetoken, 'ether'),{from:account,gas: 6000000 });
-    }).then(function() {
-      
+      return meta.game_id_map_better(account,betid);
+    }).then(function(data1) {
+      $("#incbet").val(web3.fromWei(data1[1]*1000, 'ether'))
+      meta.better_increase_bet_tokens(betid, web3.toWei(incresetoken, 'ether'),{from:account,gas: 6000000 });
     }).catch(function(e) {
       console.log(e);
      
@@ -840,7 +973,7 @@ document.getElementById("button1").disabled = true;
     
                 }
               }
-              if(a==0)
+              if(a==0&&data[5]>date)
               {
                
                 if(data[3]==false)

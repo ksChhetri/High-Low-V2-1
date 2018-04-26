@@ -177,6 +177,8 @@ contract High_low_2
     
     mapping(uint256=>uint256) public high_betters;
 
+    mapping(address=>mapping(uint256=>bool)) public is_exit;
+
     function get_better_betted_bets_length() public constant returns(uint256)
     {
         return better_betted_bets[msg.sender].length;
@@ -299,7 +301,7 @@ contract High_low_2
         require(game_id_map_better[msg.sender][bet_id].betted_tokens>0);
         require(bet_status_map[bet_id].is_bet_stopped==false);
         require(bet_details_map[bet_creator[bet_id]][index_of_broker_bet[bet_id]].expiry_time>=now);
-        
+        is_exit[msg.sender][bet_id]=true;
         uint256 tokens_betted=game_id_map_better[msg.sender][bet_id].betted_tokens;
         game_id_map_better[msg.sender][bet_id].betted_tokens=0;
         transferFrom(this, msg.sender, (tokens_betted*1000*95)/100);
