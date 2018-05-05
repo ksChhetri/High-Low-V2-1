@@ -2,14 +2,26 @@
 import "../stylesheets/app.css";
 
 // Import libraries we need.
-import { default as Web3} from 'web3';
+//import { default as Web3} from 'web3';
+var web3;
+if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
+    web3 = new Web3(window.web3.currentProvider);
+}
+
 import { default as contract } from 'truffle-contract'
+import { error } from "util";
 
 // Import our contract artifacts and turn them into usable abstractions.
-import metacoin_artifacts from '../../build/contracts/High_low_2.json'
+//import metacoin_artifacts from '../../build/contracts/High_low_2.json'
+var abiJSON = [ { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "bet_creator", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "name", "outputs": [ { "name": "", "type": "string" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "approve", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [], "name": "add_broker", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [], "name": "check_broker", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "bet_status_map", "outputs": [ { "name": "is_bet_stopped", "type": "bool" }, { "name": "is_result_published", "type": "bool" }, { "name": "final_option", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "bet_id", "type": "uint256" }, { "name": "_increase_tokens_in_wei", "type": "uint256" } ], "name": "better_increase_bet_tokens", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [ { "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transferFrom", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "get_better_betted_bets_length", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "uint256" } ], "name": "bet_details_map", "outputs": [ { "name": "bet_id", "type": "uint256" }, { "name": "team_1", "type": "string" }, { "name": "team_2", "type": "string" }, { "name": "team_selecetd", "type": "bool" }, { "name": "start_time", "type": "uint256" }, { "name": "expiry_time", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "uint256" } ], "name": "better_betted_bets", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "low_betters", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_totalSupply", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "high_betters", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "account_token_balance", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "contract_token_balance", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "contract_ether_balance", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "bet_tokens_for_low", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "broker_addresses", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" }, { "name": "", "type": "uint256" } ], "name": "betters_of_bet_id", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "_owner", "type": "address" } ], "name": "balanceOf", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "check_better", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "tokens_to_exchange_in_wei", "type": "uint256" } ], "name": "exchange_token", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "bet_tokens_for_high", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "bet_id", "type": "uint256" }, { "name": "result_options", "type": "uint256" } ], "name": "broker_setting_result_and_distribute_money", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [ { "name": "bet_id", "type": "uint256" }, { "name": "_choice", "type": "uint256" }, { "name": "_bet_tokens_in_wei", "type": "uint256" } ], "name": "betting", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [], "name": "buy_token", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [ { "name": "", "type": "string" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "bet_id", "type": "uint256" } ], "name": "broker_stop_bet", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "index_of_broker_bet", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "uint256" } ], "name": "is_exit", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "is_better", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "broker_created_bets", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "length_of_broker_addresses", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "uint256" } ], "name": "game_id_map_better", "outputs": [ { "name": "option", "type": "bool" }, { "name": "betted_tokens", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "_owner", "type": "address" }, { "name": "_spender", "type": "address" } ], "name": "allowance", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "index", "type": "uint256" } ], "name": "get_broker_address", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "is_broker", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_bet_id", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "bet_id", "type": "uint256" } ], "name": "better_exit_bet", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [ { "name": "_team_1", "type": "string" }, { "name": "_team_2", "type": "string" }, { "name": "_team_selecetd", "type": "bool" }, { "name": "_start_time", "type": "uint256" }, { "name": "_expiry_time", "type": "uint256" } ], "name": "broker_set_game", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }, { "inputs": [], "payable": true, "stateMutability": "payable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "indexed_from", "type": "address" }, { "indexed": false, "name": "indexed_to", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" } ], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "indexed_owner", "type": "address" }, { "indexed": false, "name": "indexed_spender", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" } ], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "_sender", "type": "address" }, { "indexed": false, "name": "_receiver", "type": "address" }, { "indexed": false, "name": "_transfer_amount", "type": "uint256" } ], "name": "Transfer_amount", "type": "event" } ];
+
 
 // MetaCoin is our usable abstraction, which we'll use through the code below.
-var MetaCoin = contract(metacoin_artifacts);
+//var MetaCoin = contract(metacoin_artifacts);
+var MyContract = web3.eth.contract(abiJSON);
+var _address = "0xb483122573faa5335bd7be228a15c41ee9d92834";
+var _contracInstance = MyContract.at(_address);
+
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -24,9 +36,9 @@ var passtime;
 window.App = {
   start: function() {
     var self = this;
-
+    console.log("inside aapp ");
     // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(web3.currentProvider);
+    //MetaCoin.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
@@ -42,8 +54,8 @@ window.App = {
 
       accounts = accs;
       account = accounts[0];
-      self.broker_list();
-      self.totalbroker_list();
+      // self.broker_list();
+      // self.totalbroker_list();
       self.sri();
       self.basicfunctions();
       self.user_table();
@@ -61,30 +73,29 @@ window.App = {
        $("#user_page").show();
          $("#broker_page").hide();
         },
-        /*broker: function() {
+        broker: function() {
           var self = this;
-          $("#user_page").hide();
-          $("#broker_page").show();
-            },*/
-      broker: function() {
-          var self = this;
-     
-          var meta;
-          MetaCoin.deployed().then(function(instance) {
-            meta = instance;
-            return meta.check_broker({from: account});
-          }).then(function(value) {
-            console.log(value);
-           if(value==true)
-           {
-            
-            $("#user_page").hide();
-            $("#broker_page").show();
-           }
-           else
-           {
-           
-            meta.length_of_broker_addresses().then(function(val){
+
+          _contracInstance.check_broker({from: account},
+            function(err,value) {
+              console.log("err   ",err);
+              console.log("value   ",value);
+              if(err){
+                console.log("broker  ::",err);
+              }
+              if(value)
+              {
+                console.log("value inside   ",value);
+                $("#user_page").hide();
+                $("#broker_page").show();
+              }
+              else{
+                console.log("value inside 2  ",value);
+              _contracInstance.length_of_broker_addresses(function(error,val){
+              if(error){
+                console.log("error inside broker method ",error);
+                return;
+              }
               if(val<5)
               {
                 var txt;
@@ -92,26 +103,22 @@ window.App = {
                 if (r == true) {
                 App.addbroker();
                 } 
-            }})
+            }});
            }
-          }).catch(function(e) {
-            console.log(e);
-           
           });
         },
         addbroker: function() {
           var self = this;
       
-          var meta;
-          MetaCoin.deployed().then(function(instance) {
-            meta = instance;
-            return meta. add_broker({from: account,gas: 6000000});
-          }).then(function(value) {
-          
-          }).catch(function(e) {
-            console.log(e);
-            self.setStatus("Error getting balance; see log.");
-          });
+          _contracInstance.add_broker.sendTransaction({from: account,gas: 4682508},function(error,value) {
+            if (error) {
+              console.log("error in addBroker method",error);
+              return;
+            }
+            else{
+              console.log("value of addbroker  ",value);
+            }       
+          })
         },
 
   basicfunctions : function(){
@@ -120,7 +127,8 @@ window.App = {
     web3.eth.getBalance(account, (err, balance) => {
       balance = web3.fromWei(balance, "ether") + ""
       $("#balance").val(balance.trim())
-      $("#balance1").val(balance.trim())
+      console.log("balance :: ",balance);
+      //$("#balance1").val(balance.trim())
     });
   },
   
@@ -128,17 +136,18 @@ window.App = {
     var self = this;
 
     var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.balanceOf(account, {from: account});
-    }).then(function(value) {
-      parseFloat
-      $("#usertoken").val(web3.fromWei(value, 'ether'))
-      $("#brokertoken").val(web3.fromWei(value, 'ether'))
-    }).catch(function(e) {
-      console.log(e);
-     
-    });
+    _contracInstance.balanceOf(account, {from: account},
+      function(error,value) {
+        if(error){
+          console.log("brokertoken error  ",error);
+          return;
+        }
+        else{
+          console.log("brokertoken value ::",value);
+          $("#usertoken").val(web3.fromWei(value, 'ether'))
+          $("#brokertoken").val(web3.fromWei(value, 'ether'))
+        }
+    })
   },
   user_table : function() {
     var self = this;
@@ -146,20 +155,24 @@ window.App = {
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#user_table").html('')
-     MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.get_better_betted_bets_length({from: account});
-    }).then(function(val1) {
-      for(var i=0;i<val1.toNumber();i++)
+     _contracInstance.get_better_betted_bets_length({from: account},
+      function(error,val1) {
+      if(error){
+         console.log("#user_table  ",error);
+         return;
+       }
+      else{
+      //for(var i=0;i<val1.toNumber();i++)
+      for(var i=0;i<val1;i++)
       {
-        meta.better_betted_bets(account,i).then(function(val2){
-        meta.bet_creator(val2).then(function(val3){ 
-      meta. index_of_broker_bet(val2).then(function(val4,err){
-        meta.bet_details_map(val3,val4).then(function(data,err){
-          meta.bet_status_map(data[0]).then(function(data1,err){
-            meta. game_id_map_better(account,data[0]).then(function(data2,err){
-              meta. high_betters(data[0]).then(function(data3,err){
-                meta.low_betters(data[0]).then(function(data4,err){
+        _contracInstance.better_betted_bets.sendTransaction(account,i,function(val2){
+          _contracInstance.bet_creator.sendTransaction(val2,function(val3){ 
+            _contracInstance.index_of_broker_bet.sendTransaction(val2,function(val4,err){
+              _contracInstance.bet_details_map.sendTransaction(val3,val4,function(data,err){
+                _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
+                  _contracInstance.game_id_map_better.sendTransaction(account,data[0],function(data2,err){
+                    _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
+                      _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
           {
@@ -383,11 +396,10 @@ window.App = {
     });
           });
         
+        });
       });
     });
-  });
-    }
-  
+    }}  
     });
   },
   totalbroker_list:function(){
@@ -396,22 +408,26 @@ window.App = {
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#broker_list").html('')
-     MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.length_of_broker_addresses();
-    }).then(function(val1) {
-      for(var a=0;a<val1.toNumber();a++)
-      {
-        meta.get_broker_address(a).then(function(val2){
-      meta. broker_created_bets(val2).then(function(val,err){
-       for(var i=val.toNumber();i>=1;i--)
+     _contracInstance.length_of_broker_addresses(function(error,val1) {
+       if(error){
+         console.log("#broker_list  ::",error);
+         return;
+       }
+       else{
+       var x=val1;
+       console.log(x,"...xxx....")
+       for(var a=0;a<x;a++){
+        _contracInstance.get_broker_address(a,
+          function(val2){
+                _contracInstance.broker_created_bets.sendTransaction(val2,function(val,err){
+       for(var i=val;i>=1;i--)
        {
-        meta.bet_details_map(val2,i).then(function(data,err){
-          meta.bet_status_map(data[0]).then(function(data1,err){
-            meta. high_betters(data[0]).then(function(data3,err){
-              meta.low_betters(data[0]).then(function(data4,err){
-                meta. game_id_map_better(account,data[0]).then(function(data2,err){
-                  meta.is_exit(account,data[0]).then(function(data5,err){
+        _contracInstance.bet_details_map.sendTransaction(val2,i,function(data,err){
+          _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
+            _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
+              _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
+                _contracInstance.game_id_map_better.sendTransaction(account,data[0],function(data2,err){
+                  _contracInstance.is_exit.sendTransaction(account,data[0],function(data5,err){
             var a=parseInt(data1[2]);
             if(data2[1]>0)
             {
@@ -810,6 +826,7 @@ window.App = {
       });
     });
     }
+  }
     });
   },
   pval:function (pass,time)
@@ -829,16 +846,18 @@ window.App = {
   var bettokeninwei = document.getElementById('incbet').value*0.001;
   var date=new Date().toLocaleString();
   date = parseInt(Math.round(new Date(date))/1000.0);
-      var meta;
-      MetaCoin.deployed().then(function(instance) {
-        meta = instance;
-        return meta.balanceOf(account,{from:account,gas: 6000000 });
-      }).then(function(val) {
+      // var meta;
+      _contracInstance.balanceOf(account,{from:account,gas: 6000000 },
+        function(error,val) {
+          if(error){
+            console.log("betting ::",error)
+          }
+          else{
         if(bettime<=date)
         {
         if(val>bettokeninwei)
         {
-        meta. betting(betid,choice,web3.toWei(bettokeninwei, 'ether'),{from:account,gas: 6000000 }).then(function(data2,err){
+          _contracInstance.betting.sendTransaction(betid,choice,web3.toWei(bettokeninwei, 'ether'),{from:account,gas: 6000000 },function(data2,err){
         })
       }
       else{
@@ -849,10 +868,12 @@ window.App = {
     {
       alert("You Need To Wait Upto Start Time");
     }
-      }).catch(function(e) {
-        console.log(e);
+  }
+})
+      // .catch(function(e) {
+      //   console.log(e);
        
-      });
+      // });
     },
   //increse betting popup
   
@@ -861,73 +882,82 @@ window.App = {
   
   var betid = parseInt(passvalue);
   var incresetoken = document.getElementById('onlynum').value*0.001;
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.game_id_map_better(account,betid);
-    }).then(function(data1) {
-      $("#incbet").val(web3.fromWei(data1[1]*1000, 'ether'))
-      meta.better_increase_bet_tokens(betid, web3.toWei(incresetoken, 'ether'),{from:account,gas: 6000000 });
-    }).catch(function(e) {
-      console.log(e);
+    _contracInstance.game_id_map_better.sendTransaction(account,betid,
+      function(error,data1) {
+        if(error){
+          console.log("better_increase_bet_tokens  ::",error);
+          return;
+        }
+        else{
+        $("#incbet").val(web3.fromWei(data1[1]*1000, 'ether'))
+        _contracInstance.better_increase_bet_tokens.sendTransaction(betid, web3.toWei(incresetoken, 'ether'),{from:account,gas: 6000000 });
+        }
+    })
+    // .catch(function(e) {
+    //   console.log(e);
      
-    });
+    // });
   },
   //exit bet
   better_exit_bet : function() {
     var self = this;
-  var betid = parseInt(passvalue);
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.better_exit_bet(betid,{from:account,gas: 6000000});
-    }).then(function() {
+    var betid = parseInt(passvalue);
+    _contracInstance.better_exit_bet.sendTransaction(betid,{from:account,gas: 4653035},
+      function(error) {
+        if(error){
+          console.log("better exit bet  ::",error);
+          return;
+        }
       
-    }).catch(function(e) {
-      console.log(e);
+    })
+    // .catch(function(e) {
+    //   console.log(e);
      
-    });
+    // });
   },
   //  purchase token
   buy_token : function() {
     var self = this;
     var meta;
     var num1 = parseFloat(document.getElementById('num').value)*0.001;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.buy_token({from:account,value: web3.toWei(num1,'ether'),gas: 6000000});
-    }).then(function() {
-      
-    }).catch(function(e) {
-      console.log(e);
+    _contracInstance.buy_token.sendTransaction({from:account,value: web3.toWei(num1,'ether'),gas: 4653035},
+    function(err) {
+      if(err){
+        console.log("buy_token.sendTransaction   :::",err);
+        return;
+      }
+    })
+    // .catch(function(e) {
+    //   console.log(e);
      
-    });
+    // });
   },
   // sell token
    exchange_token : function() {
     var self = this;
   var covertTokentoEther = parseFloat(document.getElementById('selltk').value) *0.001;
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.exchange_token( web3.toWei(covertTokentoEther),{from:account,gas: 6000000});
-    }).then(function() {
-      
-    }).catch(function(e) {
-      console.log(e);
+    _contracInstance.exchange_token.sendTransaction( web3.toWei(covertTokentoEther),{from:account,gas: 6000000},
+    function(err) {
+      if(err){
+        console.log("error in converting  ",error);
+        return;
+      }      
+    })
+    // .catch(function(e) {
+    //   console.log(e);
      
-    });
+    // });
   },
   myFunction: function(m) {
     document.getElementById("a").disabled = true;
-document.getElementById("b").disabled = true;
-document.getElementById("button2").disabled = true;
+    document.getElementById("b").disabled = true;
+    document.getElementById("button2").disabled = true;
      select =m.value;
   },
   myFunction1: function(m) {
-    document.getElementById("a").disabled = true;
-document.getElementById("b").disabled = true;
-document.getElementById("button1").disabled = true;
+  document.getElementById("a").disabled = true;
+  document.getElementById("b").disabled = true;
+  document.getElementById("button1").disabled = true;
    select =m.value;
   },  
   stop_bet: function(m) {
@@ -939,20 +969,22 @@ document.getElementById("button1").disabled = true;
   broker_list:function(){
    
     var self = this;
-    var meta;
     var date=new Date().toLocaleString();
     date = parseInt(Math.round(new Date(date))/1000.0);
     $("#broker_list").html('')
-     MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.broker_created_bets(account);
-    }).then(function(val) {
-       for(var i=val.toNumber();i>=1;i--)
-       {
-        meta.bet_details_map(account,i).then(function(data,err){
-          meta.bet_status_map(data[0]).then(function(data1,err){
-            meta. high_betters(data[0]).then(function(data3,err){
-              meta.low_betters(data[0]).then(function(data4,err){
+     _contracInstance.broker_created_bets.sendTransaction(account,
+      function(error,val) {
+        if(error){
+          console.log("#broker_list  ",error );
+          return;
+        }
+        else{
+        for(var i=val;i>=1;i--)
+        {
+        _contracInstance.bet_details_map.sendTransaction(account,i,function(data,err){
+          _contracInstance.bet_status_map.sendTransaction(data[0],function(data1,err){
+            _contracInstance.high_betters.sendTransaction(data[0],function(data3,err){
+              _contracInstance.low_betters.sendTransaction(data[0],function(data4,err){
             var a=parseInt(data1[2]);
              if(data1[0]==true)
             {
@@ -1108,6 +1140,7 @@ document.getElementById("button1").disabled = true;
            });  
           });
         }
+      }
     });
   },
  /*() broker_list:function()
@@ -1144,31 +1177,36 @@ sri:function()
   stopbet: function() {
     var self = this;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.broker_stop_bet(stopbetid, {from: account,gas: 6000000});
-    }).then(function(value) {
-     
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
-    });
+    _contracInstance.broker_stop_bet.sendTransaction(stopbetid, {from: account,gas: 6000000},
+      function(error,value) {
+        if(error){
+          console.log("stopbet error  ::",error);
+          self.setStatus("Error getting balance; see log.");
+          return;
+        }     
+    })
+    // .catch(function(e) {
+    //   console.log(e);
+    //   self.setStatus("Error getting balance; see log.");
+    // });
   },
   
   declarebet: function() {
     var self = this;
     var result=  parseInt($("input[name='gender']:checked").val().trim());
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.broker_setting_result_and_distribute_money(declarebetid, result, {from: account,gas: 6000000});
-    }).then(function(value) {
+    _contracInstance.broker_setting_result_and_distribute_money.sendTransaction(declarebetid, result, {from: account,gas: 6000000},
+      function(error,value) {
+        if(error){
+          console.log("declarebet error  ::",error);
+          self.setStatus("Error getting balance; see log.");
+          return;
+        }
      
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
-    });
+    })
+    // .catch(function(e) {
+    //   console.log(e);
+    //   self.setStatus("Error getting balance; see log.");
+    // });
   },
   create_bet: function() {
     var self = this;
@@ -1179,15 +1217,19 @@ sri:function()
     etime = parseInt(Math.round(new Date(etime))/1000.0);
     var etime1 = $("#edate1").val();
     etime1 = parseInt(Math.round(new Date(etime1))/1000.0);
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.broker_set_game(teamA,teamB,select,etime,etime1,{from: account,gas: 6000000});
-    }).then(function() {
-      
-    }).catch(function(e) {
-      console.log(e);
-    });
+    _contracInstance.broker_set_game.sendTransaction(teamA,teamB,select,etime,etime1,{from: account,gas: 4653035},
+      function(error,value) {
+        if(error){
+          console.log("create_bet  ::",error);
+          return;
+        }
+        else{
+          console.log("value for broker set",value)
+        }
+    })
+    // .catch(function(e) {
+    //   console.log(e);
+    // });
   }
 };
 window.addEventListener('load', function() {
